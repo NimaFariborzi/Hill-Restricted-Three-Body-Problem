@@ -127,11 +127,10 @@ legend('zero velocity curves','upper forbidden region','lower forbidden region',
 
 
 %visualzing flow hitting the zero velocity curve
-%THE IC OF THIS NEEDS TO BE FOUND
-x0h=[.3,.2,0];
-v0h=[.3,-.04,0];
+x0h=[.5,0,0];
+v0h=[.3,0,0];
 X0h = [x0h; v0h];
-thend=10;
+thend=6.5;
 tspan = [0 thend];
 %solving for traj
 [~,xh] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan,X0h,options);
@@ -148,14 +147,15 @@ xh_lower=fph.XData(fph.YData<0);
 yh_upper=fph.YData(fph.YData>0);
 yh_lower=fph.YData(fph.YData<0);
 
-% patch(xh_upper,yh_upper,'k')
-% patch(xh_lower,yh_lower,'k')
+patch(xh_upper,yh_upper,'k')
+patch(xh_lower,yh_lower,'k')
 
 % Plot trajectory in rotating frame
 view(2)
 hold on
 plot(0,0,'ro','MarkerFaceColor','r')
 plot_traj(xh,'k')
+% plot(x0h(1),x0h(2),'bo')
 plot( x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
 plot(-x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
 text( x_eq(1)-0.02,x_eq(2)+0.04,'L2','FontSize',10)
@@ -167,7 +167,7 @@ axis equal
 xlabel('$x$ (dimensionless)')
 ylabel('$y$ (dimensionless)')
 zlabel('$z$ (dimensionless)')
-title('Hill Restricted 3-Body Problem','forbidden region covering exits')
+title('Hill Restricted 3-Body Problem','spacecraft reflecting off forbidden region')
 legend('zero velocity curves','upper forbidden region','lower forbidden region','Secondary','trajectory')
 
 
