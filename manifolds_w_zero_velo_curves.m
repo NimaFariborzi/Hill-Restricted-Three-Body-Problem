@@ -140,7 +140,7 @@ rh=sqrt(xh(:,1).^2+xh(:,2).^2+xh(:,3).^2);
 Jh=1/2.*(xh(:,4).^2+xh(:,5).^2+xh(:,6).^2)-1./rh-1/2.*(3*xh(:,1).^2-xh(:,3).^2);
 %plotting zero velocity curves
 figure()
-fph=fimplicit(@(xfb,yfb)Js(1)+1/(sqrt(xfb^2+yfb^2))+3/2*xfb^2);
+fph=fimplicit(@(xfb,yfb)Jh(1)+1/(sqrt(xfb^2+yfb^2))+3/2*xfb^2);
 hold on
 
 xh_upper=fph.XData(fph.YData>0);
