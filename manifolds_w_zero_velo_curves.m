@@ -93,13 +93,13 @@ rs=sqrt(xs(:,1).^2+xs(:,2).^2+xs(:,3).^2);
 Js=1/2.*(xs(:,4).^2+xs(:,5).^2+xs(:,6).^2)-1./rs-1/2.*(3*xs(:,1).^2-xs(:,3).^2);
 %plotting zero velocity curves
 figure()
-fph=fimplicit(@(xfb,yfb)Js(1)+1/(sqrt(xfb^2+yfb^2))+3/2*xfb^2);
+fps=fimplicit(@(xfb,yfb)Js(1)+1/(sqrt(xfb^2+yfb^2))+3/2*xfb^2);
 hold on
 
-xh_upper=fph.XData(fph.YData>0);
-xh_lower=fph.XData(fph.YData<0);
-yh_upper=fph.YData(fph.YData>0);
-yh_lower=fph.YData(fph.YData<0);
+xs_upper=fps.XData(fps.YData>0);
+xs_lower=fps.XData(fps.YData<0);
+ys_upper=fps.YData(fps.YData>0);
+ys_lower=fps.YData(fps.YData<0);
 
 % patch(xh_upper,yh_upper,'k')
 % patch(xh_lower,yh_lower,'k')
@@ -127,7 +127,48 @@ legend('zero velocity curves','upper forbidden region','lower forbidden region',
 
 
 %visualzing flow hitting the zero velocity curve
+%THE IC OF THIS NEEDS TO BE FOUND
+x0h=[.3,.2,0];
+v0h=[.3,-.04,0];
+X0h = [x0h; v0h];
+thend=10;
+tspan = [0 thend];
+%solving for traj
+[~,xh] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan,X0h,options);
+%solving for J
+rh=sqrt(xh(:,1).^2+xh(:,2).^2+xh(:,3).^2);
+Jh=1/2.*(xh(:,4).^2+xh(:,5).^2+xh(:,6).^2)-1./rh-1/2.*(3*xh(:,1).^2-xh(:,3).^2);
+%plotting zero velocity curves
+figure()
+fph=fimplicit(@(xfb,yfb)Js(1)+1/(sqrt(xfb^2+yfb^2))+3/2*xfb^2);
+hold on
 
+xh_upper=fph.XData(fph.YData>0);
+xh_lower=fph.XData(fph.YData<0);
+yh_upper=fph.YData(fph.YData>0);
+yh_lower=fph.YData(fph.YData<0);
+
+% patch(xh_upper,yh_upper,'k')
+% patch(xh_lower,yh_lower,'k')
+
+% Plot trajectory in rotating frame
+view(2)
+hold on
+plot(0,0,'ro','MarkerFaceColor','r')
+plot_traj(xh,'k')
+plot( x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
+plot(-x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
+text( x_eq(1)-0.02,x_eq(2)+0.04,'L2','FontSize',10)
+text(-x_eq(1)+0.02,x_eq(2),'L1','FontSize',10)
+xlim([-1 1])
+ylim([-1 1])
+% zlim([-1 1])
+axis equal
+xlabel('$x$ (dimensionless)')
+ylabel('$y$ (dimensionless)')
+zlabel('$z$ (dimensionless)')
+title('Hill Restricted 3-Body Problem','forbidden region covering exits')
+legend('zero velocity curves','upper forbidden region','lower forbidden region','Secondary','trajectory')
 
 
 
