@@ -113,6 +113,9 @@ plot( x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
 plot(-x_eq(1),x_eq(2),'kx','LineWidth',1,'MarkerSize',15)
 text( x_eq(1)-0.02,x_eq(2)+0.04,'L2','FontSize',10)
 text(-x_eq(1)+0.02,x_eq(2),'L1','FontSize',10)
+%writing forbidden region
+text( -.2,0.8,'Forbidden Region','FontSize',10)
+text( -.2,-0.8,'Forbidden Region','FontSize',10)
 xlim([-1 1])
 ylim([-1 1])
 % zlim([-1 1])
@@ -176,14 +179,18 @@ legend('zero velocity curves','upper forbidden region','lower forbidden region',
 
 
 %solving Traj of 3d orbits with zero velo curves
+%this IC is for being stuck in zero veloctiy plane
+x03=[.3,.2,0];
+v03=[.3,-.04,.2];
+%
 %im guessing here
-x03=[.5,.3,.4];
-v03=[0,.4,.2];
+% x03=[.5,.3,0];
+% v03=[0,.4,.2];
 X03 = [x03; v03];
 t3end=5;
 tspan = [0 t3end];
 %solving for traj
-[~,x3] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan,X0_u1,options);
+[~,x3] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan,X03,options);
 %solving for J
 r3=sqrt(x3(:,1).^2+x3(:,2).^2+x3(:,3).^2);
 J3=1/2.*(x3(:,4).^2+x3(:,5).^2+x3(:,6).^2)-1./r3-1/2.*(3*x3(:,1).^2-x3(:,3).^2);
@@ -203,10 +210,13 @@ plot_traj3(x3,'r')
 % plot3(-x_eq(1),x_eq(2),0,'kx','LineWidth',3,'MarkerSize',20)
 % text( x_eq(1)-0.02,x_eq(2)+0.04,'L2','FontSize',18)
 % text(-x_eq(1)+0.02,x_eq(2),'L1','FontSize',18)
+% xlim([-1 1])
+% ylim([-1 1])
+% zlim([-1 1])
+axis equal
 xlim([-1 1])
 ylim([-1 1])
 zlim([-1 1])
-axis equal
 xlabel('$x$ (dimensionless)')
 ylabel('$y$ (dimensionless)')
 zlabel('$z$ (dimensionless)')
