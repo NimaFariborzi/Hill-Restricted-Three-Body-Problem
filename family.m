@@ -69,9 +69,9 @@ end
 % Integrate
 t = cell(1,n);
 x = cell(1,n);
-options = odeset('AbsTol',1e-12,'RelTol',1e-10);
+options = odeset('AbsTol',1e-12,'RelTol',1e-12);
 for i = 1:n
-    [t_out,x_out] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan{i},x0{i},options);
+    [t_out,x_out] = ode113(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan{i},x0{i},options);
     t{i} = t_out;
     x{i} = x_out;
 end
@@ -85,7 +85,7 @@ axis equal
 xlabel('$\rho_x$')
 ylabel('$\rho_y$')
 title('HR3BP Trajectories','Family of Stable Periodic Orbits')
-% pause(0.1)
+pause(0.1)
 % exportgraphics(gcf,'Family.png','Resolution',300)
 
 % Equations of motion for HR3BP in dimensional coordinates
