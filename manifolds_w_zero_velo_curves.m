@@ -120,11 +120,11 @@ xlim([-1 1])
 ylim([-1 1])
 % zlim([-1 1])
 axis equal
-xlabel('$x$ (dimensionless)')
-ylabel('$y$ (dimensionless)')
-zlabel('$z$ (dimensionless)')
+xlabel('x (dimensionless)')
+ylabel('y (dimensionless)')
+zlabel('z (dimensionless)')
 title('Hill Restricted 3-Body Problem','forbidden region covering exits')
-legend('zero velocity curves','upper forbidden region','lower forbidden region','Secondary','trajectory')
+legend('zero velocity curves','Secondary','trajectory')
 
 
 
@@ -167,9 +167,9 @@ xlim([-1 1])
 ylim([-1 1])
 % zlim([-1 1])
 axis equal
-xlabel('$x$ (dimensionless)')
-ylabel('$y$ (dimensionless)')
-zlabel('$z$ (dimensionless)')
+xlabel('x (dimensionless)')
+ylabel('y (dimensionless)')
+zlabel('z (dimensionless)')
 title('Hill Restricted 3-Body Problem','spacecraft reflecting off forbidden region')
 legend('zero velocity curves','upper forbidden region','lower forbidden region','Secondary','trajectory')
 
@@ -180,9 +180,54 @@ legend('zero velocity curves','upper forbidden region','lower forbidden region',
 
 %solving Traj of 3d orbits with zero velo curves
 %this IC is for being stuck in zero veloctiy plane
+% x03=[.3,.2,0];
+% v03=[.3,-.04,.2];
+%
+%im guessing here
+x03=[.5,.3,0];
+v03=[0,.4,.2];
+X03 = [x03; v03];
+t3end=5;
+tspan = [0 t3end];
+%solving for traj
+[~,x3] = ode45(@(t,x) HR3BP_Dimless_EOM(t,x,'forward'),tspan,X03,options);
+%solving for J
+r3=sqrt(x3(:,1).^2+x3(:,2).^2+x3(:,3).^2);
+J3=1/2.*(x3(:,4).^2+x3(:,5).^2+x3(:,6).^2)-1./r3-1/2.*(3*x3(:,1).^2-x3(:,3).^2);
+%plotting zero velocity curves 3D
+figure()
+%I'm trying to make the picture better, hard.... the interval fixes the
+%implicit but i need the traj to be fixed as well
+% interval=[-1 1 -1 1 -1 1];
+f3p=fimplicit3(@(x3fb,y3fb,z3fb)J3(1)+1/(sqrt(x3fb^2+y3fb^2+z3fb^2))+3/2*x3fb^2-1/2*z3fb^2,'EdgeColor','none','FaceAlpha',0.25);
+hold on
+plot3(0,0,0,'ro','MarkerFaceColor','k')
+plot_traj3(x3,'r')
+% plot_traj3(x_s1,[.7 .7 .7])
+% plot_traj3(x_u2,'b')
+% plot_traj3(x_s2,[.7 .7 .7])
+% plot3( x_eq(1),x_eq(2),0,'kx','LineWidth',3,'MarkerSize',20)
+% plot3(-x_eq(1),x_eq(2),0,'kx','LineWidth',3,'MarkerSize',20)
+% text( x_eq(1)-0.02,x_eq(2)+0.04,'L2','FontSize',18)
+% text(-x_eq(1)+0.02,x_eq(2),'L1','FontSize',18)
+% xlim([-1 1])
+% ylim([-1 1])
+% zlim([-1 1])
+axis equal
+xlim([-1 1])
+ylim([-1 1])
+zlim([-1 1])
+xlabel('x (dimensionless)')
+ylabel('y (dimensionless)')
+zlabel('z (dimensionless)')
+title('Hill Restricted 3-Body Problem','Zero Velocity Planes')
+legend('zero velocity planes','Secondary','trajectory')
+
+%solving Traj of 3d orbits with zero velo curves
+%this IC is for being stuck in zero veloctiy plane
 x03=[.3,.2,0];
 v03=[.3,-.04,.2];
-%
+
 %im guessing here
 % x03=[.5,.3,0];
 % v03=[0,.4,.2];
@@ -217,11 +262,17 @@ axis equal
 xlim([-1 1])
 ylim([-1 1])
 zlim([-1 1])
-xlabel('$x$ (dimensionless)')
-ylabel('$y$ (dimensionless)')
-zlabel('$z$ (dimensionless)')
+xlabel('x (dimensionless)')
+ylabel('y (dimensionless)')
+zlabel('z (dimensionless)')
 title('Hill Restricted 3-Body Problem','Zero Velocity Planes')
 legend('zero velocity planes','Secondary','trajectory')
+
+
+
+
+
+
 
 
 function Xdot = HR3BP_Dimless_EOM(~,X,state)
