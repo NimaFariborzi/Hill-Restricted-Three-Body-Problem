@@ -2,51 +2,39 @@ close all
 clearvars
 clc
 
-pertur=0.0001;
+pertur=0.01;
 
-%planar periodic initial condition 
+%planar periodic IC
 x01 = .28350; 
 J1 = 4.49999;
 ydot1 = sqrt(3*x01^2 + 2/x01 - J1);
 X01=[x01;0;0;ydot1];
 
-x01=0.2835;
-xdot1=0;
-y01=0;
-ydot1=1.6721;
-J1=0.5*(xdot1^2+ydot1^2)-(1/(sqrt(x01^2+y01^2)))-0.5*(3*x01^2);
+%perturbed IC
+X01p=[x01+pertur;0;0;ydot1];
 
-% %perturbed IC
-% x01p = .28350+pertur; 
-% J1p = 4.49999;
-% ydot1p = sqrt(3*x01p^2 + 2/x01p - J1p);
-% X01p=[x01p;0;0;ydot1p];
+options = odeset('AbsTol',1e-14,'RelTol',1e-14); 
+tspan = [0,200]; 
 
-
-options = odeset('AbsTol',1e-12,'RelTol',1e-12); 
-tspan = [0,10]; 
-
-[T1,X1] = ode45(@(t,x) eom_hR3bp_2d(x),tspan,X01,options);
-[T1p,X1p] = ode45(@(t,x) eom_hR3bp_2d(x),tspan,X01p,options);
+[T1,X1] = ode113(@(t,x) eom_hR3bp_2d(x),tspan,X01,options);
+[T1p,X1p] = ode113(@(t,x) eom_hR3bp_2d(x),tspan,X01p,options);
 
 X1pinter=interp1(T1p,X1p,T1,'spline');
 deltaX=zeros(size(T1,1),1);
 r=zeros(size(T1,1),1);
-LE=zeros(size(T1,1),1);
+LCE=zeros(size(T1,1),1);
+
+%loop for calculating the LCE at each time step
 for i=1:size(T1,1)
-    deltaX(i)= sqrt((X1(i,1)-X1pinter(i,1))^2+(X1(i,2)-X1pinter(i,2))^2);
-    %deltaX(i)= sqrt((X1(i,1)-X1p(i,1))^2+(X1(i,2)-X1p(i,2))^2);
+    deltaX(i)= norm(X1(i,:)-X1pinter(i,:));
     r(i)=log(deltaX(i)/deltaX(1));
-    LE(i)= 1/size(T1,1) *sum(r,"all");
+    LCE(i)= 1/T1(i) *r(i);
     i
 end
 
-
-
-
+%plot
 figure(3)
-plot(T1,LE)
-%legend()
+plot(T1(2:end),LCE(2:end))
 xlabel('time');
 ylabel('LCE');
 title('LCE vs time');
